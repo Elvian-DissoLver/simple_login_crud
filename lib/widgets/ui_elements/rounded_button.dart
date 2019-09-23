@@ -14,10 +14,10 @@ class RoundedButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 120.0,
+      width: 130.0,
       child: this.icon != null
           ? FlatButton.icon(
-        color: Colors.lightBlue,
+        color: Colors.greenAccent,
         icon: icon,
         label: Text(label),
         shape: RoundedRectangleBorder(

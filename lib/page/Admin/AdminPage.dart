@@ -1,81 +1,70 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:scoped_model/scoped_model.dart';
-import 'package:simple_login_crud/scoped_models/app_model.dart';
-import 'package:simple_login_crud/widgets/helpers/MessageDialog.dart';
 import 'package:simple_login_crud/widgets/style/theme.dart' as Theme;
-import 'package:simple_login_crud/widgets/ui_elements/loading_modal.dart';
+import 'package:simple_login_crud/scoped_models/app_model.dart';
 import 'package:simple_login_crud/widgets/ui_elements/rounded_button.dart';
 
-class AuthPage extends StatefulWidget {
-@override
-State<StatefulWidget> createState() {
-  return _AuthPageState();
+class AdminPage extends StatefulWidget {
+  final AppModel model;
+
+  AdminPage(this.model);
+
+  @override
+  State<StatefulWidget> createState() {
+    return _AdminPageState();
+  }
 }
-}
 
-class _AuthPageState extends State<AuthPage> {
-  final Map<String, dynamic> _formData = {
-    'email': null,
-    'password': null,
-  };
+class _AdminPageState extends State<AdminPage> {
 
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  @override
+  void initState() {
 
-  void _authenticate(AppModel model) async {
-    if (!_formKey.currentState.validate()) {
-      return;
-    }
+//    widget.model.fetchNotes();
 
-    _formKey.currentState.save();
+    super.initState();
 
-    Map<String, dynamic> authResult;
-//    await model.signInWithEmailAndPassword(_formData['email'], _formData['password']);
-
-    if (authResult['success']) {
-    } else {
-      MessageDialog.show(context, message: authResult['message']);
-    }
   }
 
-  Widget _buildUserNameField() {
-    return TextFormField(
-      decoration: InputDecoration(labelText: 'Username'),
-      validator: (value) {
-        if (value.isEmpty ||
-            !RegExp(r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
-                .hasMatch(value)) {
-          return 'Please enter a valid username';
-        }
-      },
-      onSaved: (value) {
-        _formData['email'] = value;
-      },
+  @override
+  void dispose() {
+
+    super.dispose();
+  }
+
+  Widget _buildAppBar(AppModel model) {
+    return AppBar(
+      centerTitle: true,
+      title: Text(
+        'CRUD',
+        style: TextStyle(
+          color: Color(0xFF005bea),
+        ),
+      ),
     );
   }
 
-  Widget _buildPasswordField() {
-    return TextFormField(
-      obscureText: true,
-      decoration: InputDecoration(labelText: 'Password'),
-      validator: (value) {
-        if (value.isEmpty) {
-          return 'Please enter password';
-        }
-      },
-      onSaved: (value) {
-        _formData['password'] = value;
-      },
-    );
+  Widget _buildFloatingActionButton(AppModel model) {
+
+      return FloatingActionButton(
+        child: Icon(Icons.add),
+
+        onPressed: () {
+//          model.setCurrentNote(null);
+          Navigator.pushNamed(context, '/editorNote');
+        },
+      );
   }
 
   Widget _buildButtonRow(AppModel model) {
-    return Row(
+    return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         RoundedButton(
           icon: Icon(Icons.edit),
-          label: 'Sign up',
+          label: 'Add user',
           onPressed: () {
             Navigator.pushNamed(context, '/signup');
           },
@@ -84,9 +73,9 @@ class _AuthPageState extends State<AuthPage> {
           width: 20.0,
         ),
         RoundedButton(
-          icon: Icon(Icons.lock_open),
-          label: 'Sign in',
-          onPressed: () => _authenticate(model),
+          icon: Icon(Icons.view_array),
+          label: 'View user',
+          onPressed: () => {},
         ),
       ],
     );
@@ -95,12 +84,12 @@ class _AuthPageState extends State<AuthPage> {
   Widget _logoApp() {
     return Container(
       child: Center(
-        child: new Text(
-            'CRUD',
-          style: TextStyle(
-            fontSize: 20,
-          ),
-        )
+          child: new Text(
+            'Welcome Admin',
+            style: TextStyle(
+              fontSize: 20,
+            ),
+          )
       ),
     );
   }
@@ -108,9 +97,11 @@ class _AuthPageState extends State<AuthPage> {
   Widget _buildPageContent(AppModel model) {
     final double deviceWidth = MediaQuery.of(context).size.width;
     final double targetWidth = deviceWidth > 550 ? 500 : deviceWidth * 0.85;
-
     return Scaffold(
-      backgroundColor: Colors.yellow,
+//      drawer: AppDrawer(),
+      appBar: _buildAppBar(model),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      floatingActionButton: _buildFloatingActionButton(model),
       body: Container(
         padding: EdgeInsets.all(10.0),
         width: MediaQuery.of(context).size.width,
@@ -129,19 +120,15 @@ class _AuthPageState extends State<AuthPage> {
               tileMode: TileMode.clamp),
         ),
         child: Center(
+
           child: SingleChildScrollView(
             child: Container(
               width: targetWidth,
               child: Form(
-                key: _formKey,
+//                key: _formKey,
                 child: Column(
                   children: <Widget>[
                     _logoApp(),
-                    SizedBox(
-                      height: 70.0,
-                    ),
-                    _buildUserNameField(),
-                    _buildPasswordField(),
                     SizedBox(
                       height: 70.0,
                     ),
@@ -160,18 +147,20 @@ class _AuthPageState extends State<AuthPage> {
   Widget build(BuildContext context) {
     return ScopedModelDescendant<AppModel>(
       builder: (BuildContext context, Widget child, AppModel model) {
-        Stack mainStack = Stack(
+        Stack stack = Stack(
           children: <Widget>[
             _buildPageContent(model),
           ],
         );
 
 //        if (model.isLoading) {
-//          mainStack.children.add(LoadingModal());
+//          stack.children.add(LoadingModal());
 //        }
 
-        return mainStack;
+        return stack;
       },
     );
   }
 }
+
+
