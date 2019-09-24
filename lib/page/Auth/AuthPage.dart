@@ -166,9 +166,9 @@ class _AuthPageState extends State<AuthPage> {
           ],
         );
 
-//        if (model.isLoading) {
-//          mainStack.children.add(LoadingModal());
-//        }
+        if (model.isLoading) {
+          mainStack.children.add(LoadingModal());
+        }
 
         return mainStack;
       },

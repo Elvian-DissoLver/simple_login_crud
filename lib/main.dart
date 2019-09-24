@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:simple_login_crud/page/Admin/AdminPage.dart';
 import 'package:simple_login_crud/page/Admin/EditUserPage.dart';
+import 'package:simple_login_crud/page/Admin/UserListPage.dart';
 import 'package:simple_login_crud/page/Auth/AuthPage.dart';
 import 'package:simple_login_crud/scoped_models/app_model.dart';
 
@@ -60,6 +61,8 @@ class _CRUDState extends State<CRUD> {
           AuthPage(),
           '/editUser': (BuildContext context) =>
           EditUserPage(),
+          '/listUser': (BuildContext context) =>
+          UserListPage(_model),
         },
         onUnknownRoute: (RouteSettings settings) {
           return MaterialPageRoute(

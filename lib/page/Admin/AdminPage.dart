@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:simple_login_crud/widgets/style/theme.dart' as Theme;
 import 'package:simple_login_crud/scoped_models/app_model.dart';
+import 'package:simple_login_crud/widgets/ui_elements/loading_modal.dart';
 import 'package:simple_login_crud/widgets/ui_elements/rounded_button.dart';
 
 class AdminPage extends StatefulWidget {
@@ -60,7 +61,9 @@ class _AdminPageState extends State<AdminPage> {
         RoundedButton(
           icon: Icon(Icons.supervised_user_circle),
           label: 'View user',
-          onPressed: () => {},
+          onPressed: () {
+            Navigator.pushNamed(context, '/listUser');
+          },
         ),
       ],
     );
@@ -138,9 +141,9 @@ class _AdminPageState extends State<AdminPage> {
           ],
         );
 
-//        if (model.isLoading) {
-//          stack.children.add(LoadingModal());
-//        }
+        if (model.isLoading) {
+          stack.children.add(LoadingModal());
+        }
 
         return stack;
       },

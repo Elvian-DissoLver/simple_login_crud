@@ -4,6 +4,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:simple_login_crud/scoped_models/app_model.dart';
 import 'package:simple_login_crud/widgets/helpers/MessageDialog.dart';
 import 'package:simple_login_crud/widgets/style/theme.dart' as Theme;
+import 'package:simple_login_crud/widgets/ui_elements/loading_modal.dart';
 import 'package:simple_login_crud/widgets/ui_elements/rounded_button.dart';
 
 class EditUserPage extends StatefulWidget {
@@ -159,9 +160,9 @@ class _EditUserPageState extends State<EditUserPage> {
           ],
         );
 
-//        if (model.isLoading) {
-//          mainStack.children.add(LoadingModal());
-//        }
+        if (model.isLoading) {
+          mainStack.children.add(LoadingModal());
+        }
 
         return mainStack;
       },
