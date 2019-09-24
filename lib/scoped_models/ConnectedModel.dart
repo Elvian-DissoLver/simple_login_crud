@@ -10,6 +10,7 @@ import 'package:simple_login_crud/services/database.dart';
 mixin CoreModel on Model {
   List<User> _users = [];
   User _user;
+  User _editUser;
   bool _isLoading = false;
 
 }
@@ -27,8 +28,16 @@ mixin UsersModel on CoreModel {
     return _user;
   }
 
-  void setCurrentNote(User user) {
+  User get editUser {
+    return _editUser;
+  }
+
+  void setCurrentUser(User user) {
     _user = user;
+  }
+
+  void setEditUser(User user) {
+    _editUser = user;
   }
 
   Future<Null> fetchUsers() async{
@@ -140,7 +149,7 @@ mixin Auth on CoreModel {
     _isLoading = true;
     notifyListeners();
 
-    try {
+
 
       final response = await UsersDatabaseService.db.getLogin(username, password);
 
@@ -155,9 +164,8 @@ mixin Auth on CoreModel {
         );
 
         print('------');
-//
-//        UsersModel model;
-//        model.updateUser(user);
+
+        updateUserData(user);
 
         _userSubject.add(true);
 
@@ -177,12 +185,11 @@ mixin Auth on CoreModel {
         'success': false,
         'message': message,
       };
-    } catch (error) {
-      _isLoading = false;
-      notifyListeners();
 
-      return {'success': false, 'message': error};
-    }
+  }
+
+  void updateUserData(User updatedUser) async {
+    await UsersDatabaseService.db.updateUserInDB(updatedUser);
   }
 
   @override

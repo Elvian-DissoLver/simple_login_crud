@@ -54,12 +54,10 @@ class _CRUDState extends State<CRUD> {
         routes: {
           '/': (BuildContext context) =>
           _isAuthenticated ? HomePage(_model)  : AuthPage(),
-          '/userPage': (BuildContext context) =>
-          AuthPage(),
           '/editUser': (BuildContext context) =>
-          EditUserPage(_model),
+          _isAuthenticated ? EditUserPage(_model) : AuthPage(),
           '/listUser': (BuildContext context) =>
-          UserListPage(_model),
+          _isAuthenticated ? UserListPage(_model) : AuthPage(),
         },
         onUnknownRoute: (RouteSettings settings) {
           return MaterialPageRoute(

@@ -42,7 +42,7 @@ class UserCard extends StatelessWidget {
                 child: InkWell(
                   borderRadius: BorderRadius.circular(16),
                   onTap: () {
-                    model.setCurrentNote(userData);
+                    model.setEditUser(userData);
                     Navigator.pushNamed(context, '/editUser');
                   },
                   splashColor: color.withAlpha(20),

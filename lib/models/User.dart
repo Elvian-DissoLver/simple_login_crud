@@ -23,8 +23,8 @@ class User {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       '_id': this.id,
-      'title': this.username,
-      'content': this.password,
+      'username': this.username,
+      'password': this.password,
       'date': this.date.toIso8601String()
     };
   }

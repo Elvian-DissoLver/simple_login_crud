@@ -28,7 +28,7 @@ class _EditUserPageState extends State<EditUserPage> {
     'password': null,
   };
 
-  User newUser;
+  User editUser;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _passwordController = TextEditingController();
@@ -37,11 +37,11 @@ class _EditUserPageState extends State<EditUserPage> {
   void initState() {
     super.initState();
 
-    if (widget.model.currentUser == null) {
-      newUser = User(
+    if (widget.model.editUser == null) {
+      editUser = User(
           username: '', password: '', date: DateTime.now());
     } else {
-      newUser = widget.model.currentUser;
+      editUser = widget.model.editUser;
     }
   }
 
@@ -53,13 +53,13 @@ class _EditUserPageState extends State<EditUserPage> {
     _formKey.currentState.save();
 
     setState(() {
-      newUser.username = _formData['username'];
-      newUser.password = _formData['password'];
-      print('Hey there ${newUser.username}');
+      editUser.username = _formData['username'];
+      editUser.password = _formData['password'];
+      print('Hey there ${editUser.username}');
     });
 
     Map<String, dynamic> authResult =
-      await model.createUser(newUser);
+      await model.createUser(editUser);
 
     if (authResult['success']) {
       Navigator.pop(context);
@@ -68,9 +68,10 @@ class _EditUserPageState extends State<EditUserPage> {
     }
   }
 
-  Widget _buildUserNameField() {
+  Widget _buildUserNameField(User user) {
     return TextFormField(
       decoration: InputDecoration(labelText: 'Username'),
+      initialValue: user == null ? '' : user.username,
       validator: (value) {
         if (value.isEmpty) {
           return 'Please enter a valid username';
@@ -82,9 +83,10 @@ class _EditUserPageState extends State<EditUserPage> {
     );
   }
 
-  Widget _buildPasswordField() {
+  Widget _buildPasswordField(User user) {
     return TextFormField(
       decoration: InputDecoration(labelText: 'Password'),
+//      initialValue: user == null ? '' : user.password ,
       controller: _passwordController,
       validator: (value) {
         if (value.isEmpty || value.length < 6) {
@@ -97,9 +99,10 @@ class _EditUserPageState extends State<EditUserPage> {
     );
   }
 
-  Widget _buildConfirmPasswordField() {
+  Widget _buildConfirmPasswordField(User user) {
     return TextFormField(
       decoration: InputDecoration(labelText: 'Confirm Password'),
+      initialValue: user == null ? '' : user.password ,
       validator: (value) {
         if (value != _passwordController.value.text) {
           return 'Password and confirm password are not match';
@@ -126,6 +129,11 @@ class _EditUserPageState extends State<EditUserPage> {
   Widget _buildPageContent(AppModel model) {
     final double deviceWidth = MediaQuery.of(context).size.width;
     final double targetWidth = deviceWidth > 550 ? 500 : deviceWidth * 0.85;
+
+    User editUser = model.editUser;
+
+    _formData['username'] = editUser != null ? editUser.username : null;
+    _formData['password'] = editUser != null ? editUser.password : null;
 
     return Scaffold(
       appBar: AppBar(
@@ -157,9 +165,9 @@ class _EditUserPageState extends State<EditUserPage> {
                 key: _formKey,
                 child: Column(
                   children: <Widget>[
-                    _buildUserNameField(),
-                    _buildPasswordField(),
-                    _buildConfirmPasswordField(),
+                    _buildUserNameField(editUser),
+                    _buildPasswordField(editUser),
+                    _buildConfirmPasswordField(editUser),
                     SizedBox(
                       height: 20.0,
                     ),
