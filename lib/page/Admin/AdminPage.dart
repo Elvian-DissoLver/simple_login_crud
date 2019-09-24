@@ -39,23 +39,8 @@ class _AdminPageState extends State<AdminPage> {
       centerTitle: true,
       title: Text(
         'CRUD',
-        style: TextStyle(
-          color: Color(0xFF005bea),
-        ),
       ),
     );
-  }
-
-  Widget _buildFloatingActionButton(AppModel model) {
-
-      return FloatingActionButton(
-        child: Icon(Icons.add),
-
-        onPressed: () {
-//          model.setCurrentNote(null);
-          Navigator.pushNamed(context, '/editorNote');
-        },
-      );
   }
 
   Widget _buildButtonRow(AppModel model) {
@@ -63,17 +48,17 @@ class _AdminPageState extends State<AdminPage> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         RoundedButton(
-          icon: Icon(Icons.edit),
+          icon: Icon(Icons.add_circle),
           label: 'Add user',
           onPressed: () {
-            Navigator.pushNamed(context, '/signup');
+            Navigator.pushNamed(context, '/editUser');
           },
         ),
         SizedBox(
           width: 20.0,
         ),
         RoundedButton(
-          icon: Icon(Icons.view_array),
+          icon: Icon(Icons.supervised_user_circle),
           label: 'View user',
           onPressed: () => {},
         ),
@@ -81,7 +66,7 @@ class _AdminPageState extends State<AdminPage> {
     );
   }
 
-  Widget _logoApp() {
+  Widget _textAdmin() {
     return Container(
       child: Center(
           child: new Text(
@@ -101,7 +86,7 @@ class _AdminPageState extends State<AdminPage> {
 //      drawer: AppDrawer(),
       appBar: _buildAppBar(model),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      floatingActionButton: _buildFloatingActionButton(model),
+
       body: Container(
         padding: EdgeInsets.all(10.0),
         width: MediaQuery.of(context).size.width,
@@ -128,7 +113,7 @@ class _AdminPageState extends State<AdminPage> {
 //                key: _formKey,
                 child: Column(
                   children: <Widget>[
-                    _logoApp(),
+                    _textAdmin(),
                     SizedBox(
                       height: 70.0,
                     ),
