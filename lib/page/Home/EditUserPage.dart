@@ -40,6 +40,8 @@ class _EditUserPageState extends State<EditUserPage> {
     if (widget.model.currentUser == null) {
       newUser = User(
           username: '', password: '', date: DateTime.now());
+    } else {
+      newUser = widget.model.currentUser;
     }
   }
 

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:simple_login_crud/page/Admin/AdminPage.dart';
-import 'package:simple_login_crud/page/Admin/EditUserPage.dart';
-import 'package:simple_login_crud/page/Admin/UserListPage.dart';
 import 'package:simple_login_crud/page/Auth/AuthPage.dart';
+import 'package:simple_login_crud/page/Home/HomePage.dart';
+import 'package:simple_login_crud/page/Home/EditUserPage.dart';
+import 'package:simple_login_crud/page/Home/UserListPage.dart';
 import 'package:simple_login_crud/scoped_models/app_model.dart';
-import 'package:simple_login_crud/services/database.dart';
 
 void main() async {
   runApp(CRUD());
@@ -26,14 +25,12 @@ class _CRUDState extends State<CRUD> {
   void initState() {
 
     _model = AppModel();
-//    _model.loadSettings();
-//    _model.autoAuthentication();
-//
-//    _model.userSubject.listen((bool isAuthenticated) {
-//      setState(() {
-//        _isAuthenticated = isAuthenticated;
-//      });
-//    });
+
+    _model.userSubject.listen((bool isAuthenticated) {
+      setState(() {
+        _isAuthenticated = isAuthenticated;
+      });
+    });
 
     super.initState();
   }
@@ -56,8 +53,7 @@ class _CRUDState extends State<CRUD> {
         ),
         routes: {
           '/': (BuildContext context) =>
-//          AuthPage(),
-            AdminPage(_model),
+          _isAuthenticated ? HomePage(_model)  : AuthPage(),
           '/userPage': (BuildContext context) =>
           AuthPage(),
           '/editUser': (BuildContext context) =>

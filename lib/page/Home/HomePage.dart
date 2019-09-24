@@ -8,18 +8,18 @@ import 'package:simple_login_crud/scoped_models/app_model.dart';
 import 'package:simple_login_crud/widgets/ui_elements/loading_modal.dart';
 import 'package:simple_login_crud/widgets/ui_elements/rounded_button.dart';
 
-class AdminPage extends StatefulWidget {
+class HomePage extends StatefulWidget {
   final AppModel model;
 
-  AdminPage(this.model);
+  HomePage(this.model);
 
   @override
   State<StatefulWidget> createState() {
-    return _AdminPageState();
+    return _HomePageState();
   }
 }
 
-class _AdminPageState extends State<AdminPage> {
+class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
@@ -73,7 +73,7 @@ class _AdminPageState extends State<AdminPage> {
     return Container(
       child: Center(
           child: new Text(
-            'Welcome Admin',
+            widget.model.currentUser.username== 'admin'? 'Welcome Admin': 'Welcome ${widget.model.currentUser.username}',
             style: TextStyle(
               fontSize: 20,
             ),
@@ -113,14 +113,15 @@ class _AdminPageState extends State<AdminPage> {
             child: Container(
               width: targetWidth,
               child: Form(
-//                key: _formKey,
                 child: Column(
                   children: <Widget>[
                     _textAdmin(),
                     SizedBox(
                       height: 70.0,
                     ),
-                    _buildButtonRow(model)
+                    widget.model.currentUser.username=='admin'? _buildButtonRow(model): SizedBox(
+                      height: 10.0,
+                    ),
                   ],
                 ),
               ),

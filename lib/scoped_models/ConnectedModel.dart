@@ -1,5 +1,9 @@
 
+import 'dart:async';
+
+import 'package:rxdart/rxdart.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_login_crud/models/User.dart';
 import 'package:simple_login_crud/services/database.dart';
 
@@ -59,7 +63,6 @@ mixin UsersModel on CoreModel {
     String id;
 
     try {
-      print('--------');
       await UsersDatabaseService.db.addUserInDB(newUser);
 
       _isLoading = false;
@@ -74,17 +77,13 @@ mixin UsersModel on CoreModel {
   }
 
   Future<bool> updateUser(
-      User newUser) async {
+      User updatedUser) async {
     _isLoading = true;
     notifyListeners();
 
-    final Map<String, dynamic> formData = {
-      'username': newUser.username,
-      'password': newUser.password,
-      'date': DateTime.now().toIso8601String(),
-    };
-
     try {
+
+      await UsersDatabaseService.db.updateUserInDB(updatedUser);
 
       _isLoading = false;
       notifyListeners();
@@ -121,3 +120,117 @@ mixin UsersModel on CoreModel {
     }
   }
 }
+
+mixin Auth on CoreModel {
+
+  Timer _authTimer;
+
+  PublishSubject<bool> _userSubject = PublishSubject();
+
+  User get user {
+    return _user;
+  }
+
+  PublishSubject<bool> get userSubject {
+    return _userSubject;
+  }
+
+  Future<Map<String, dynamic>> authenticate(
+      String username, String password) async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+
+      final response = await UsersDatabaseService.db.getLogin(username, password);
+
+      String message;
+
+      if (response != null) {
+        _user = User(
+          id: response.id,
+          username: response.username,
+          password: response.password,
+          date: DateTime.now()
+        );
+
+        print('------');
+//
+//        UsersModel model;
+//        model.updateUser(user);
+
+        _userSubject.add(true);
+
+        _isLoading = false;
+        notifyListeners();
+
+        return {'success': true};
+      } else {
+        message = 'Invalid username or password.';
+      }
+
+      _isLoading = false;
+      notifyListeners();
+
+      print(message);
+      return {
+        'success': false,
+        'message': message,
+      };
+    } catch (error) {
+      _isLoading = false;
+      notifyListeners();
+
+      return {'success': false, 'message': error};
+    }
+  }
+
+  @override
+  Future<void> signOut() async {
+
+    _users = [];
+    _user = null;
+
+    _userSubject.add(false);
+
+
+    final prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+  }
+
+
+  void autoAuthentication() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String token = prefs.getString('token');
+
+    if (token != null) {
+      final String expiryTimeString = prefs.getString('expiryTime');
+      final DateTime now = DateTime.now();
+      final parsedExpiryTime = DateTime.parse(expiryTimeString);
+
+      if (parsedExpiryTime.isBefore(now)) {
+        _user = null;
+        notifyListeners();
+        return;
+      }
+
+      _user = User(
+          id: prefs.getInt('userId'),
+          username: prefs.getString('username'),
+      );
+
+      final int tokenLifespan = parsedExpiryTime.difference(now).inSeconds;
+      setAuthTimeout(tokenLifespan);
+
+      _userSubject.add(true);
+
+      notifyListeners();
+
+    }
+  }
+
+  void setAuthTimeout(int time) {
+    _authTimer = Timer(Duration(seconds: time), signOut);
+  }
+}
+

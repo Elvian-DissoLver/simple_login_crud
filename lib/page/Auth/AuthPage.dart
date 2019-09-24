@@ -16,7 +16,7 @@ State<StatefulWidget> createState() {
 
 class _AuthPageState extends State<AuthPage> {
   final Map<String, dynamic> _formData = {
-    'email': null,
+    'username': null,
     'password': null,
   };
 
@@ -30,7 +30,7 @@ class _AuthPageState extends State<AuthPage> {
     _formKey.currentState.save();
 
     Map<String, dynamic> authResult;
-//    await model.signInWithEmailAndPassword(_formData['email'], _formData['password']);
+      await model.authenticate(_formData['username'], _formData['password']);
 
     if (authResult['success']) {
     } else {
@@ -42,21 +42,18 @@ class _AuthPageState extends State<AuthPage> {
     return TextFormField(
       decoration: InputDecoration(labelText: 'Username'),
       validator: (value) {
-        if (value.isEmpty ||
-            !RegExp(r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
-                .hasMatch(value)) {
+        if (value.isEmpty) {
           return 'Please enter a valid username';
         }
       },
       onSaved: (value) {
-        _formData['email'] = value;
+        _formData['username'] = value;
       },
     );
   }
 
   Widget _buildPasswordField() {
     return TextFormField(
-      obscureText: true,
       decoration: InputDecoration(labelText: 'Password'),
       validator: (value) {
         if (value.isEmpty) {
@@ -74,17 +71,7 @@ class _AuthPageState extends State<AuthPage> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         RoundedButton(
-          icon: Icon(Icons.edit),
-          label: 'Sign up',
-          onPressed: () {
-            Navigator.pushNamed(context, '/signup');
-          },
-        ),
-        SizedBox(
-          width: 20.0,
-        ),
-        RoundedButton(
-          icon: Icon(Icons.lock_open),
+          icon: Icon(Icons.arrow_forward_ios),
           label: 'Sign in',
           onPressed: () => _authenticate(model),
         ),

@@ -31,6 +31,23 @@ class UsersDatabaseService {
     });
   }
 
+  Future<User> getLogin(String username, String password) async {
+    var db = await database;
+    var res = await db.rawQuery("SELECT * FROM Users WHERE username = '$username' and password = '$password'");
+
+    User findUser;
+
+    if (res.length > 0) {
+      res.forEach((f) {
+        print('res');
+        print(f);
+        findUser = User.fromMap(f);
+      });
+      return findUser;
+    }
+    return null;
+  }
+
   Future<List<User>> getUsersFromDB() async {
     final db = await database;
     List<User> usersList = [];
@@ -41,8 +58,6 @@ class UsersDatabaseService {
         usersList.add(User.fromMap(map));
       });
     }
-
-    print('-------');
     return usersList;
   }
 

@@ -43,7 +43,7 @@ class UserCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16),
                   onTap: () {
                     model.setCurrentNote(userData);
-                    Navigator.pushNamed(context, '/editorNote');
+                    Navigator.pushNamed(context, '/editUser');
                   },
                   splashColor: color.withAlpha(20),
                   highlightColor: color.withAlpha(10),
@@ -89,7 +89,7 @@ class UserCard extends StatelessWidget {
                             children: <Widget>[
                               Spacer(),
                               Text(
-                                'Last Edit: $neatDate',
+                                'Last Seen: $neatDate',
                                 textAlign: TextAlign.right,
                                 style: TextStyle(
                                     fontSize: 12,
