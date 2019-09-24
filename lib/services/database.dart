@@ -74,15 +74,11 @@ class UsersDatabaseService {
     print('Note deleted');
   }
 
-  Future<User> addUserInDB(User newUser) async {
+  Future addUserInDB(String username, String password) async {
     final db = await database;
-//    if (newUser.password.trim().isEmpty) newUser.password = 'Untitled Note';
-    int id = await db.transaction((transaction) {
+    await db.transaction((transaction) {
       transaction.rawInsert(
-          'INSERT into Users(username, password, date) VALUES ("${newUser.username}", "${newUser.password}", "${newUser.date.toIso8601String()}");');
+          'INSERT into Users(username, password, date) VALUES ("${username}", "${password}", "${DateTime.now().toIso8601String()}");');
     });
-    newUser.id = id;
-    print('Note added: ${newUser.username} ${newUser.password}');
-    return newUser;
   }
 }

@@ -24,6 +24,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     UsersDatabaseService.db.init();
+    widget.model.setEditUser(null);
 
     super.initState();
 
@@ -136,6 +137,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return ScopedModelDescendant<AppModel>(
       builder: (BuildContext context, Widget child, AppModel model) {
+//        model.setEditUser(null);
         Stack stack = Stack(
           children: <Widget>[
             _buildPageContent(model),

@@ -36,7 +36,7 @@ class _UserListPageState extends State<UserListPage> {
     return AppBar(
       centerTitle: true,
       title: Text(
-        'CRUD',
+        'List User',
       ),
     );
   }

@@ -9,12 +9,9 @@ import 'package:simple_login_crud/widgets/ui_elements/loading_modal.dart';
 import 'package:simple_login_crud/widgets/ui_elements/rounded_button.dart';
 
 class EditUserPage extends StatefulWidget {
-  EditUserPage(AppModel model)
-  {
-    this.model = model;
-  }
+  final AppModel model;
 
-  AppModel model;
+  EditUserPage(this.model);
 
   @override
   State<StatefulWidget> createState() {
@@ -28,21 +25,18 @@ class _EditUserPageState extends State<EditUserPage> {
     'password': null,
   };
 
-  User editUser;
-
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _passwordController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
+  }
 
-    if (widget.model.editUser == null) {
-      editUser = User(
-          username: '', password: '', date: DateTime.now());
-    } else {
-      editUser = widget.model.editUser;
-    }
+  @override
+  void dispose() {
+    widget.model.setEditUser(null);
+    super.dispose();
   }
 
   void _register(AppModel model) async {
@@ -52,20 +46,41 @@ class _EditUserPageState extends State<EditUserPage> {
 
     _formKey.currentState.save();
 
-    setState(() {
-      editUser.username = _formData['username'];
-      editUser.password = _formData['password'];
-      print('Hey there ${editUser.username}');
-    });
-
     Map<String, dynamic> authResult =
-      await model.createUser(editUser);
+      await model.createUser(_formData['username'], _formData['password']);
 
     if (authResult['success']) {
       Navigator.pop(context);
     } else {
       MessageDialog.show(context, message: authResult['message']);
     }
+  }
+
+  void _editUser(AppModel model) async {
+    if (!_formKey.currentState.validate()) {
+      return;
+    }
+
+    _formKey.currentState.save();
+
+    User editUser = User(
+      id: model.editUser.id,
+      username: _formData['username'],
+      password: _formData['password'],
+      date: DateTime.now()
+    );
+
+    await model.updateUser(editUser)
+        .then((bool success) {
+      if (success) {
+        model.setEditUser(null);
+
+        Navigator.pop(context);
+      } else {
+        MessageDialog.show(context);
+      }
+    });
+
   }
 
   Widget _buildUserNameField(User user) {
@@ -115,11 +130,19 @@ class _EditUserPageState extends State<EditUserPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        RoundedButton(
+        model.editUser == null ? RoundedButton(
           icon: Icon(Icons.add_circle),
           label: 'Add User',
           onPressed: () {
             _register(model);
+          },
+        )
+            :
+        RoundedButton(
+          icon: Icon(Icons.edit),
+          label: 'Edit User',
+          onPressed: () {
+            _editUser(model);
           },
         ),
       ],
@@ -138,7 +161,9 @@ class _EditUserPageState extends State<EditUserPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('CRUD'),
+        title: Text(
+            editUser == null ? 'Add User' : 'Edit User'
+        ),
       ),
       body: Container(
         padding: EdgeInsets.all(10.0),

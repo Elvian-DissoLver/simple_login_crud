@@ -65,14 +65,14 @@ mixin UsersModel on CoreModel {
   }
 
   Future<Map<String, dynamic>> createUser(
-      User newUser) async {
+      String username, String password) async {
     _isLoading = true;
     notifyListeners();
 
     String id;
 
     try {
-      await UsersDatabaseService.db.addUserInDB(newUser);
+      await UsersDatabaseService.db.addUserInDB(username, password);
 
       _isLoading = false;
       notifyListeners();
