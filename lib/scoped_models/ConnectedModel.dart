@@ -1,6 +1,7 @@
 
 import 'package:scoped_model/scoped_model.dart';
-import 'package:simple_login_crud/models/user.dart';
+import 'package:simple_login_crud/models/User.dart';
+import 'package:simple_login_crud/services/database.dart';
 
 mixin CoreModel on Model {
   List<User> _users = [];
@@ -36,6 +37,11 @@ mixin UsersModel on CoreModel {
 
     try {
 
+      var fetchedUsers = await UsersDatabaseService.db.getUsersFromDB();
+      print('list');
+      print(fetchedUsers);
+      _users= fetchedUsers;
+
       _isLoading = false;
       notifyListeners();
     } catch (error) {
@@ -45,26 +51,26 @@ mixin UsersModel on CoreModel {
 
   }
 
-  Future<bool> createUser(
+  Future<Map<String, dynamic>> createUser(
       User newUser) async {
     _isLoading = true;
     notifyListeners();
 
-    final Map<String, dynamic> formData = {
-      'username': newUser.username,
-      'password': newUser.password,
-      'date': DateTime.now().toIso8601String(),
-    };
     String id;
-    try {
 
-      return true;
-    }  catch (error) {
+    try {
+      print('--------');
+      await UsersDatabaseService.db.addUserInDB(newUser);
+
       _isLoading = false;
       notifyListeners();
-      return false;
-    }
 
+      return {'success': true};
+    } catch (error) {
+      _isLoading = false;
+      notifyListeners();
+      return {'success': false, 'message': error.toString()};
+    }
   }
 
   Future<bool> updateUser(
@@ -92,15 +98,16 @@ mixin UsersModel on CoreModel {
     }
   }
 
-  Future<bool> removeUser(String id) async {
+  Future<bool> removeUser(User currentUser) async {
     _isLoading = true;
     notifyListeners();
 
     try {
 
-      int noteIndex = _users.indexWhere((t) => t.id == id);
+      int noteIndex = _users.indexWhere((t) => t.id == currentUser.id);
       _users.removeAt(noteIndex);
 
+      await UsersDatabaseService.db.deleteUserInDB(currentUser);
 
       _isLoading = false;
       notifyListeners();

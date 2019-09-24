@@ -5,6 +5,7 @@ import 'package:simple_login_crud/page/Admin/EditUserPage.dart';
 import 'package:simple_login_crud/page/Admin/UserListPage.dart';
 import 'package:simple_login_crud/page/Auth/AuthPage.dart';
 import 'package:simple_login_crud/scoped_models/app_model.dart';
+import 'package:simple_login_crud/services/database.dart';
 
 void main() async {
   runApp(CRUD());
@@ -60,7 +61,7 @@ class _CRUDState extends State<CRUD> {
           '/userPage': (BuildContext context) =>
           AuthPage(),
           '/editUser': (BuildContext context) =>
-          EditUserPage(),
+          EditUserPage(_model),
           '/listUser': (BuildContext context) =>
           UserListPage(_model),
         },

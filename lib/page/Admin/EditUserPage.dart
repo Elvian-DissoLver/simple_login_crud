@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:scoped_model/scoped_model.dart';
+import 'package:simple_login_crud/models/User.dart';
 import 'package:simple_login_crud/scoped_models/app_model.dart';
 import 'package:simple_login_crud/widgets/helpers/MessageDialog.dart';
 import 'package:simple_login_crud/widgets/style/theme.dart' as Theme;
@@ -8,6 +9,13 @@ import 'package:simple_login_crud/widgets/ui_elements/loading_modal.dart';
 import 'package:simple_login_crud/widgets/ui_elements/rounded_button.dart';
 
 class EditUserPage extends StatefulWidget {
+  EditUserPage(AppModel model)
+  {
+    this.model = model;
+  }
+
+  AppModel model;
+
   @override
   State<StatefulWidget> createState() {
     return _EditUserPageState();
@@ -20,8 +28,20 @@ class _EditUserPageState extends State<EditUserPage> {
     'password': null,
   };
 
+  User newUser;
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.model.currentUser == null) {
+      newUser = User(
+          username: '', password: '', date: DateTime.now());
+    }
+  }
 
   void _register(AppModel model) async {
     if (!_formKey.currentState.validate()) {
@@ -30,8 +50,14 @@ class _EditUserPageState extends State<EditUserPage> {
 
     _formKey.currentState.save();
 
-    Map<String, dynamic> authResult;
-//    await model.createUserWithEmailAndPassword(_formData['email'], _formData['password']);
+    setState(() {
+      newUser.username = _formData['username'];
+      newUser.password = _formData['password'];
+      print('Hey there ${newUser.username}');
+    });
+
+    Map<String, dynamic> authResult =
+      await model.createUser(newUser);
 
     if (authResult['success']) {
       Navigator.pop(context);
@@ -44,9 +70,7 @@ class _EditUserPageState extends State<EditUserPage> {
     return TextFormField(
       decoration: InputDecoration(labelText: 'Username'),
       validator: (value) {
-        if (value.isEmpty ||
-            !RegExp(r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
-                .hasMatch(value)) {
+        if (value.isEmpty) {
           return 'Please enter a valid username';
         }
       },
@@ -56,21 +80,8 @@ class _EditUserPageState extends State<EditUserPage> {
     );
   }
 
-  Widget _buildConfirmPasswordField() {
-    return TextFormField(
-      obscureText: true,
-      decoration: InputDecoration(labelText: 'Confirm Password'),
-      validator: (value) {
-        if (value != _passwordController.value.text) {
-          return 'Password and confirm password are not match';
-        }
-      },
-    );
-  }
-
   Widget _buildPasswordField() {
     return TextFormField(
-      obscureText: true,
       decoration: InputDecoration(labelText: 'Password'),
       controller: _passwordController,
       validator: (value) {
@@ -80,6 +91,17 @@ class _EditUserPageState extends State<EditUserPage> {
       },
       onSaved: (value) {
         _formData['password'] = value;
+      },
+    );
+  }
+
+  Widget _buildConfirmPasswordField() {
+    return TextFormField(
+      decoration: InputDecoration(labelText: 'Confirm Password'),
+      validator: (value) {
+        if (value != _passwordController.value.text) {
+          return 'Password and confirm password are not match';
+        }
       },
     );
   }

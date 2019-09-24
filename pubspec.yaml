@@ -27,6 +27,7 @@ dependencies:
   shared_preferences:
   rxdart:
   intl:
+  sqflite:
 
 dev_dependencies:
   flutter_test:

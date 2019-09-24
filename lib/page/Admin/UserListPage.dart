@@ -21,7 +21,7 @@ class _UserListPageState extends State<UserListPage> {
   @override
   void initState() {
 
-//    widget.model.fetchNotes().asStream().single;
+    widget.model.fetchUsers();
 
     super.initState();
 

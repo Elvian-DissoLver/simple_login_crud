@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:simple_login_crud/models/user.dart';
+import 'package:simple_login_crud/models/User.dart';
 import 'package:simple_login_crud/scoped_models/app_model.dart';
 
 List<Color> colorList = [
@@ -66,14 +66,14 @@ class UserCard extends StatelessWidget {
                         Container(
                           margin: EdgeInsets.only(top: 8),
                           child: Text(
-                            '${userData.id
+                            '${userData.id.toString()
                                 .trim()
                                 .split('\n')
                                 .first
-                                .length <= 30 ? userData.id
+                                .length <= 30 ? userData.id.toString()
                                 .trim()
                                 .split('\n')
-                                .first : userData.id
+                                .first : userData.id.toString()
                                 .trim()
                                 .split('\n')
                                 .first

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:scoped_model/scoped_model.dart';
-import 'package:simple_login_crud/models/user.dart';
+import 'package:simple_login_crud/models/User.dart';
 import 'package:simple_login_crud/scoped_models/app_model.dart';
 
 import 'UserCard.dart';
@@ -42,9 +42,9 @@ class UserListView extends StatelessWidget {
         User user = model.users[index];
 
         return Dismissible(
-          key: Key(user.id),
+          key: Key(user.id.toString()),
           onDismissed: (DismissDirection direction) {
-            model.removeUser(user.id);
+            model.removeUser(user);
           },
           child: UserCard(user),
           background: Container(color: Colors.red),
