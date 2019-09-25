@@ -71,7 +71,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _textAdmin() {
+  Widget _textAdminOrUser() {
     return Container(
       child: Center(
           child: new Text(
@@ -88,7 +88,7 @@ class _HomePageState extends State<HomePage> {
     final double deviceWidth = MediaQuery.of(context).size.width;
     final double targetWidth = deviceWidth > 550 ? 500 : deviceWidth * 0.85;
     return Scaffold(
-      drawer: AppDrawer(model),
+      drawer: AppDrawer(widget.model),
       appBar: _buildAppBar(model),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
 
@@ -117,7 +117,7 @@ class _HomePageState extends State<HomePage> {
               child: Form(
                 child: Column(
                   children: <Widget>[
-                    _textAdmin(),
+                    _textAdminOrUser(),
                     SizedBox(
                       height: 70.0,
                     ),

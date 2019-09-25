@@ -117,7 +117,6 @@ class _EditUserPageState extends State<EditUserPage> {
   Widget _buildConfirmPasswordField(User user) {
     return TextFormField(
       decoration: user == null ? InputDecoration(labelText: 'Confirm Password') : InputDecoration(labelText: 'Confirm New Password'),
-      initialValue: user == null ? '' : user.password ,
       validator: (value) {
         if (value != _passwordController.value.text) {
           return 'Password and confirm password are not match';
