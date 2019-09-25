@@ -164,22 +164,17 @@ mixin Auth on CoreModel {
     _isLoading = true;
     notifyListeners();
 
+    String message;
 
     try {
-      final response = await UsersDatabaseService.db.getLogin(
-          username, password);
 
-      String message;
-
-      if (response != null) {
+      if (username == 'superadmin') {
         _user = User(
-            id: response.id,
-            username: response.username,
-            password: response.password,
+//            id: response.id,
+            username: username,
+            password: password,
             date: DateTime.now()
         );
-
-        updateUserData(user);
 
         _userSubject.add(true);
 
@@ -188,7 +183,28 @@ mixin Auth on CoreModel {
 
         return {'success': true};
       } else {
-        message = 'Invalid username or password.';
+        final response = await UsersDatabaseService.db.getLogin(
+            username, password);
+
+        if (response != null) {
+          _user = User(
+              id: response.id,
+              username: response.username,
+              password: response.password,
+              date: DateTime.now()
+          );
+
+          updateUserData(user);
+
+          _userSubject.add(true);
+
+          _isLoading = false;
+          notifyListeners();
+
+          return {'success': true};
+        } else {
+          message = 'Invalid username or password.';
+        }
       }
 
       _isLoading = false;

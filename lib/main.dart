@@ -5,6 +5,7 @@ import 'package:simple_login_crud/page/Home/HomePage.dart';
 import 'package:simple_login_crud/page/Home/EditUserPage.dart';
 import 'package:simple_login_crud/page/Home/UserListPage.dart';
 import 'package:simple_login_crud/scoped_models/app_model.dart';
+import 'package:simple_login_crud/services/database.dart';
 
 void main() async {
   runApp(CRUD());
@@ -23,6 +24,8 @@ class _CRUDState extends State<CRUD> {
 
   @override
   void initState() {
+
+    UsersDatabaseService.db.init();
 
     _model = AppModel();
 
