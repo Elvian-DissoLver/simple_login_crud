@@ -150,17 +150,18 @@ mixin Auth on CoreModel {
     notifyListeners();
 
 
-
-      final response = await UsersDatabaseService.db.getLogin(username, password);
+    try {
+      final response = await UsersDatabaseService.db.getLogin(
+          username, password);
 
       String message;
 
       if (response != null) {
         _user = User(
-          id: response.id,
-          username: response.username,
-          password: response.password,
-          date: DateTime.now()
+            id: response.id,
+            username: response.username,
+            password: response.password,
+            date: DateTime.now()
         );
 
         print('------');
@@ -185,6 +186,16 @@ mixin Auth on CoreModel {
         'success': false,
         'message': message,
       };
+
+    } catch(error) {
+      _isLoading = false;
+      notifyListeners();
+
+      return {
+        'success': false,
+        'message': error.toString(),
+      };
+    }
 
   }
 

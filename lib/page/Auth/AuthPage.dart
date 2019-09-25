@@ -29,7 +29,7 @@ class _AuthPageState extends State<AuthPage> {
 
     _formKey.currentState.save();
 
-    Map<String, dynamic> authResult;
+    Map<String, dynamic> authResult =
       await model.authenticate(_formData['username'], _formData['password']);
 
     if (authResult['success']) {
