@@ -48,6 +48,23 @@ class UsersDatabaseService {
     return null;
   }
 
+  Future<User> getUser(String username) async {
+    var db = await database;
+    var res = await db.rawQuery("SELECT * FROM Users WHERE username = '$username'");
+
+    User findUser;
+
+    if (res.length > 0) {
+      res.forEach((f) {
+        print('res');
+        print(f);
+        findUser = User.fromMap(f);
+      });
+      return findUser;
+    }
+    return null;
+  }
+
   Future<List<User>> getUsersFromDB() async {
     final db = await database;
     List<User> usersList = [];

@@ -72,12 +72,29 @@ mixin UsersModel on CoreModel {
     String id;
 
     try {
-      await UsersDatabaseService.db.addUserInDB(username, password);
+
+      final response = await UsersDatabaseService.db.getUser(username);
+
+      String message;
+
+      if (response == null) {
+        await UsersDatabaseService.db.addUserInDB(username, password);
+        _isLoading = false;
+        notifyListeners();
+
+        return {'success': true};
+      } else {
+        message = 'Username has been register ';
+      }
 
       _isLoading = false;
       notifyListeners();
 
-      return {'success': true};
+      return {
+        'success': false,
+        'message': message,
+      };
+
     } catch (error) {
       _isLoading = false;
       notifyListeners();
@@ -132,8 +149,6 @@ mixin UsersModel on CoreModel {
 
 mixin Auth on CoreModel {
 
-  Timer _authTimer;
-
   PublishSubject<bool> _userSubject = PublishSubject();
 
   User get user {
@@ -164,8 +179,6 @@ mixin Auth on CoreModel {
             date: DateTime.now()
         );
 
-        print('------');
-
         updateUserData(user);
 
         _userSubject.add(true);
@@ -181,7 +194,6 @@ mixin Auth on CoreModel {
       _isLoading = false;
       notifyListeners();
 
-      print(message);
       return {
         'success': false,
         'message': message,
@@ -210,45 +222,7 @@ mixin Auth on CoreModel {
     _user = null;
 
     _userSubject.add(false);
-
-
-    final prefs = await SharedPreferences.getInstance();
-    prefs.clear();
   }
 
-
-  void autoAuthentication() async {
-    final prefs = await SharedPreferences.getInstance();
-    final String token = prefs.getString('token');
-
-    if (token != null) {
-      final String expiryTimeString = prefs.getString('expiryTime');
-      final DateTime now = DateTime.now();
-      final parsedExpiryTime = DateTime.parse(expiryTimeString);
-
-      if (parsedExpiryTime.isBefore(now)) {
-        _user = null;
-        notifyListeners();
-        return;
-      }
-
-      _user = User(
-          id: prefs.getInt('userId'),
-          username: prefs.getString('username'),
-      );
-
-      final int tokenLifespan = parsedExpiryTime.difference(now).inSeconds;
-      setAuthTimeout(tokenLifespan);
-
-      _userSubject.add(true);
-
-      notifyListeners();
-
-    }
-  }
-
-  void setAuthTimeout(int time) {
-    _authTimer = Timer(Duration(seconds: time), signOut);
-  }
 }
 
