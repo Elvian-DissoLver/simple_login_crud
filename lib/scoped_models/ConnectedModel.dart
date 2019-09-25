@@ -203,7 +203,7 @@ mixin Auth on CoreModel {
     await UsersDatabaseService.db.updateUserInDB(updatedUser);
   }
 
-  @override
+
   Future<void> signOut() async {
 
     _users = [];

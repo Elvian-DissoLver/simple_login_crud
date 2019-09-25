@@ -5,6 +5,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:simple_login_crud/services/database.dart';
 import 'package:simple_login_crud/widgets/style/theme.dart' as Theme;
 import 'package:simple_login_crud/scoped_models/app_model.dart';
+import 'package:simple_login_crud/widgets/ui_elements/AppDrawer.dart';
 import 'package:simple_login_crud/widgets/ui_elements/loading_modal.dart';
 import 'package:simple_login_crud/widgets/ui_elements/rounded_button.dart';
 
@@ -87,7 +88,7 @@ class _HomePageState extends State<HomePage> {
     final double deviceWidth = MediaQuery.of(context).size.width;
     final double targetWidth = deviceWidth > 550 ? 500 : deviceWidth * 0.85;
     return Scaffold(
-//      drawer: AppDrawer(),
+      drawer: AppDrawer(model),
       appBar: _buildAppBar(model),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
 

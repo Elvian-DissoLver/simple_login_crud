@@ -36,6 +36,7 @@ class _EditUserPageState extends State<EditUserPage> {
   @override
   void dispose() {
     widget.model.setEditUser(null);
+    widget.model.fetchUsers();
     super.dispose();
   }
 
@@ -85,7 +86,7 @@ class _EditUserPageState extends State<EditUserPage> {
 
   Widget _buildUserNameField(User user) {
     return TextFormField(
-      decoration: InputDecoration(labelText: 'Username'),
+      decoration: user == null ? InputDecoration(labelText: 'Username') : InputDecoration(labelText: 'New Username'),
       initialValue: user == null ? '' : user.username,
       validator: (value) {
         if (value.isEmpty) {
@@ -100,8 +101,7 @@ class _EditUserPageState extends State<EditUserPage> {
 
   Widget _buildPasswordField(User user) {
     return TextFormField(
-      decoration: InputDecoration(labelText: 'Password'),
-//      initialValue: user == null ? '' : user.password ,
+      decoration: user == null ? InputDecoration(labelText: 'Password') : InputDecoration(labelText: 'New Password'),
       controller: _passwordController,
       validator: (value) {
         if (value.isEmpty || value.length < 6) {
@@ -116,7 +116,7 @@ class _EditUserPageState extends State<EditUserPage> {
 
   Widget _buildConfirmPasswordField(User user) {
     return TextFormField(
-      decoration: InputDecoration(labelText: 'Confirm Password'),
+      decoration: user == null ? InputDecoration(labelText: 'Confirm Password') : InputDecoration(labelText: 'Confirm New Password'),
       initialValue: user == null ? '' : user.password ,
       validator: (value) {
         if (value != _passwordController.value.text) {
@@ -162,7 +162,9 @@ class _EditUserPageState extends State<EditUserPage> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-            editUser == null ? 'Add User' : 'Edit User'
+            editUser == null ? 'Add User'
+                : editUser.username == model.currentUser.username ? 'Edit Account'
+                : 'Edit User'
         ),
       ),
       body: Container(
